@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 
 def load_file(filename):
@@ -22,3 +23,24 @@ def load_file(filename):
     for key, val in d.items():
         d[key] = np.array(val)
     return d, nbr_samples
+
+
+def read_gas_file(filename):
+    # Load into pandas df
+    df = pd.read_table(filename + '.txt', header=8)
+    # Rename column labels
+    df.columns = df.iloc[0]
+    df = df.drop([0,1])
+    # pick out relevant columns
+    h2_strs = df.iloc[:, 5]
+    t_strs = df.iloc[:,0]
+    h2 = np.zeros(len(h2_strs))
+    t = np.zeros(len(t_strs))
+    # Iterate through and convert to float
+    i = 0
+    for h2_str, t_str in zip(h2_strs, t_strs):
+        h2[i] = np.float(h2_str.replace(',', '.'))
+        t[i] = np.float(t_str.replace(',', '.'))
+        i += 1
+    return [t, h2]
+
