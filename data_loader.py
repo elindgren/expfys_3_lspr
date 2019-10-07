@@ -4,7 +4,7 @@ import pandas as pd
 
 def load_file(filename):
     d = {}
-    with open(filename + ".asc") as f:
+    with open("Group_1c/" + filename + ".asc") as f:
         for idx, line in enumerate(f):
             val = line.split()
             # If first line, define dict arrays

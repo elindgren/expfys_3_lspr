@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from load_data import load_file
+from data_loader import load_file
 import pandas as pd
 # Standard libraries
 import os
@@ -24,7 +24,7 @@ def poly(x, intercept, coef):
     return y
 
 
-def lorentzian_fit(wavelength, data, plot=True):
+def lorentzian_fit(wavelength, data, peak_range, plot=True):
     # Fit a polynomial
     order = 20
     wl = np.array(wavelength)
@@ -33,8 +33,8 @@ def lorentzian_fit(wavelength, data, plot=True):
     # Split into three partitions
     idx_min = wl > 550
     idx_max = wl < 775
-    idx_1 = (wl <= 630)
-    idx_3 = (wl >= 700)
+    idx_1 = (wl <= peak_range[0])
+    idx_3 = (wl >= peak_range[1])
     idx_2 = idx_1 == idx_3
     idx_1 = idx_1 == idx_min
     idx_3 = idx_3 == idx_max
@@ -88,7 +88,7 @@ def lorentzian_fit(wavelength, data, plot=True):
         plt.show()
     
     # Find maxmimum by optimizing the lin_reg.predict
-    x0 = minimize_scalar(lambda x, i, c: -poly(x, i, c), method='bounded', args=(intercept_2, coef_2), bounds=(630,700))
+    x0 = minimize_scalar(lambda x, i, c: -poly(x, i, c), method='bounded', args=(intercept_2, coef_2), bounds=(peak_range[0],peak_range[1]))
     peak_x = x0.x
     peak_y = poly(peak_x, intercept_2, coef_2)
     
