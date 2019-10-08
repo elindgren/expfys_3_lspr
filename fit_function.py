@@ -24,17 +24,17 @@ def poly(x, intercept, coef):
     return y
 
 
-def lorentzian_fit(wavelength, data, peak_range, plot=True):
+def lorentzian_fit(wavelength, data, peak_guess, plot=True):
     # Fit a polynomial
     order = 20
     wl = np.array(wavelength)
     data = np.array(data)
     
     # Split into three partitions
-    idx_min = wl > 550
-    idx_max = wl < 775
-    idx_1 = (wl <= peak_range[0])
-    idx_3 = (wl >= peak_range[1])
+    idx_min = wl > peak_guess - 125
+    idx_max = wl < peak_guess + 125
+    idx_1 = (wl <= peak_guess - 50)
+    idx_3 = (wl >= peak_guess + 50)
     idx_2 = idx_1 == idx_3
     idx_1 = idx_1 == idx_min
     idx_3 = idx_3 == idx_max
@@ -88,14 +88,14 @@ def lorentzian_fit(wavelength, data, peak_range, plot=True):
         plt.show()
     
     # Find maxmimum by optimizing the lin_reg.predict
-    x0 = minimize_scalar(lambda x, i, c: -poly(x, i, c), method='bounded', args=(intercept_2, coef_2), bounds=(peak_range[0],peak_range[1]))
+    x0 = minimize_scalar(lambda x, i, c: -poly(x, i, c), method='bounded', args=(intercept_2, coef_2), bounds=(idx_1,idx_3))
     peak_x = x0.x
     peak_y = poly(peak_x, intercept_2, coef_2)
     
     # Find the FWHM by finding the roots to lin_reg.predict -lin_reg.predict(x0)/2
-    x1 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=600, args=(intercept_1, coef_1))
+    x1 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=(idx_1-idx_min)/2, args=(intercept_1, coef_1))
     FWHM_1 = x1.x[0]
-    x2 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=700, args=(intercept_3, coef_3))
+    x2 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=(idx_max-idx_3)/2, args=(intercept_3, coef_3))
     FWHM_2 = x2.x[0]
     FWHM = FWHM_2 - FWHM_1
 
