@@ -5,6 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from cycler import cycler
 from data_loader import load_file, read_gas_file
 from fit_function import lorentzian_fit
+import tikzplotlib
 import seaborn as sns
 sns.set_palette(sns.color_palette("husl", 20))
 
@@ -18,9 +19,9 @@ plt.rc('ytick', labelsize=14)    # fontsize of the tick labels
 plt.rc('legend', fontsize=14)    # legend fontsize
 
 # Load the data
-filename = 'Ag_diskrod_200nm_15pt'
+filename = 'Ag_200nm_10pt'
 lamp_spectrum_file = 'CRS_700nm'
-background_spectra = 15
+background_spectra = 0
 
 # Size of sensor is 1024x256
 data, nbr_particles = load_file(filename)
@@ -33,22 +34,23 @@ wvl = data["lambda"]
 background = data["spectra_" + str(background_spectra)]
 lamp_spectra = lamp_data["spectra_0"]
 
-#peak_guesses = [0, 0, 750, 700, 650, 600, 550, 500, 450, 400, 300, 350, 250]
+peak_guesses = [540+i*20 for i in range(nbr_particles)]
+peak_guesses.reverse()
 peak_positions = []
 for i in range(0,nbr_particles):
     spectra = data[f'spectra_{i}']
     if not i == background_spectra:
+        print(i)
         # Don't plot background
         corrected_spectra = (spectra - background)/lamp_spectra
         #norm_spectra = spectra/spectra.max()
 
-        peak_pos, fwhm = lorentzian_fit(wvl, corrected_spectra, [700, 850], False)
+        peak_pos, fwhm = lorentzian_fit(wvl, corrected_spectra, 780, False)
         peak_positions.append(peak_pos)
         delta_y = np.ones(len(wvl))*(i)
         ax.plot(wvl, delta_y, corrected_spectra, label=f'Particle {i+1}', alpha=0.7)
 
-# Plot peak position as well
-ax.plot(peak_positions, list(range(nbr_particles-1)), np.zeros(nbr_particles-1), 'k--', label="Peak position")
+
 
 #ax.set_title(f'Corrected spectra for file {filename}')
 ax.tick_params(axis='both', which='major', pad=0)
@@ -59,6 +61,15 @@ plt.grid()
 plt.legend(loc="upper left")
 plt.tight_layout()
 plt.savefig(f'{filename}.png')
+tikzplotlib.save(f'{filename}.tex')
+
+# Plot peak position as well
+fig, ax = plt.subplots()
+ax.plot(list(range(nbr_particles-1)), peak_positions, 'k--', label="Peak position")
+ax.set_xlabel("Particle")
+ax.set_ylabel("Peak position")
+tikzplotlib.save(f'{filename}_peak_pos.tex')
+
 plt.show()
 
 # Centroid = center of mass wavelength

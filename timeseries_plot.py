@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from load_data import load_file, read_gas_file
+from data_loader import load_file, read_gas_file
 import pandas as pd
 # Standard libraries
 import os
@@ -15,9 +15,9 @@ from scipy.optimize import minimize_scalar
 
 
 # Files
-filename = 'Group_1c/Pd_disk_200nm_10pt_isotherm'
-lamp_file = 'Group_1c/CRS_700nm_glas'
-gas_file = 'Group_1c/Lab_TIF295_isothermAbs30C_2p75h_Pd'
+filename = 'Pd_diskrod_200nm_15pt_pulse2'
+lamp_file = 'CRS_700nm_glas'
+gas_file = 'Lab_TIF295_ArH2_pulses_Pd_2'
 
 # Load lamp spectra
 lamp_data, _  = load_file(lamp_file)
@@ -28,7 +28,7 @@ gas_data = read_gas_file(gas_file)
 fig_gas, ax_gas = plt.subplots()
 ax_gas.plot(gas_data[0], gas_data[1])
 # Load data
-data = pd.read_table(filename + '.asc', header=None)
+data = pd.read_table("Group_1c/" + filename + '.asc', header=None)
 print(data)
 # Drop last column with NaNs
 data = data.drop(columns=12)

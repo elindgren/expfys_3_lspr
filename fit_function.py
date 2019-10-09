@@ -26,14 +26,14 @@ def poly(x, intercept, coef):
 
 def lorentzian_fit(wavelength, data, peak_guess, plot=True):
     # Fit a polynomial
-    order = 20
+    order = 4
     wl = np.array(wavelength)
     data = np.array(data)
     
     # Split into three partitions
-    idx_min = wl > peak_guess - 125
+    idx_min = wl > peak_guess - 225
     idx_max = wl < peak_guess + 125
-    idx_1 = (wl <= peak_guess - 50)
+    idx_1 = (wl <= peak_guess - 75)
     idx_3 = (wl >= peak_guess + 50)
     idx_2 = idx_1 == idx_3
     idx_1 = idx_1 == idx_min
@@ -49,7 +49,7 @@ def lorentzian_fit(wavelength, data, peak_guess, plot=True):
     
     # Construct the design matrices
     X_1 = PolynomialFeatures(3, include_bias=False).fit_transform(wl1)
-    X_2 = PolynomialFeatures(20, include_bias=False).fit_transform(wl2)
+    X_2 = PolynomialFeatures(order, include_bias=False).fit_transform(wl2)
     X_3 = PolynomialFeatures(3, include_bias=False).fit_transform(wl3)
 
     # Perform the fit
@@ -57,7 +57,7 @@ def lorentzian_fit(wavelength, data, peak_guess, plot=True):
     intercept_1 = reg_1.intercept_
     coef_1 = reg_1.coef_
     
-    reg_2 = LinearRegression(normalize=True).fit(X_2, data2)
+    reg_2 = LinearRegression(normalize=False).fit(X_2, data2)
     intercept_2 = reg_2.intercept_
     coef_2 = reg_2.coef_
     
@@ -88,14 +88,14 @@ def lorentzian_fit(wavelength, data, peak_guess, plot=True):
         plt.show()
     
     # Find maxmimum by optimizing the lin_reg.predict
-    x0 = minimize_scalar(lambda x, i, c: -poly(x, i, c), method='bounded', args=(intercept_2, coef_2), bounds=(idx_1,idx_3))
+    x0 = minimize_scalar(lambda x, i, c: -poly(x, i, c), method='bounded', args=(intercept_2, coef_2), bounds=(wl2[0],wl2[-1]))
     peak_x = x0.x
     peak_y = poly(peak_x, intercept_2, coef_2)
     
     # Find the FWHM by finding the roots to lin_reg.predict -lin_reg.predict(x0)/2
-    x1 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=(idx_1-idx_min)/2, args=(intercept_1, coef_1))
+    x1 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=(wl1[-1]+wl1[0])/2, args=(intercept_1, coef_1))
     FWHM_1 = x1.x[0]
-    x2 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=(idx_max-idx_3)/2, args=(intercept_3, coef_3))
+    x2 = root(lambda x, i, c: poly(x, i, c)-peak_y/2, x0=(wl3[-1]+wl3[0])/2, args=(intercept_3, coef_3))
     FWHM_2 = x2.x[0]
     FWHM = FWHM_2 - FWHM_1
 

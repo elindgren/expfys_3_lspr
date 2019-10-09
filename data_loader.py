@@ -27,7 +27,7 @@ def load_file(filename):
 
 def read_gas_file(filename):
     # Load into pandas df
-    df = pd.read_table(filename + '.txt', header=8)
+    df = pd.read_table("Group_1c/" + filename + '.txt', header=8)
     # Rename column labels
     df.columns = df.iloc[0]
     df = df.drop([0,1])
@@ -43,4 +43,17 @@ def read_gas_file(filename):
         t[i] = np.float(t_str.replace(',', '.'))
         i += 1
     return [t, h2]
+
+
+def read_timeseries(filename, nbr_particles):
+    data = pd.read_table("Group_1c/" + filename + '.asc', header=None)
+    # Drop last column with NaNs
+    data = data.drop(columns=nbr_particles+2)
+    # Split the data at repetitions of first_wavelength
+    first_wavelength = data.iloc[0,0]
+    # Split 
+    wvl_rep = data.index[data.iloc[:,0]==first_wavelength]
+    # Split the repeated measurements
+    measurements = [data[wvl_rep[i]:wvl_rep[i+1]] for i in range(len(wvl_rep)-1)]  # TODO Add last measurement as well
+    return measurements
 
