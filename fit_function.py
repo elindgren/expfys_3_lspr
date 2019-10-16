@@ -31,10 +31,10 @@ def lorentzian_fit(wavelength, data, peak_guess, plot=True):
     data = np.array(data)
     
     # Split into three partitions
-    idx_min = wl > peak_guess - 225
-    idx_max = wl < peak_guess + 125
-    idx_1 = (wl <= peak_guess - 75)
-    idx_3 = (wl >= peak_guess + 50)
+    idx_min = wl > peak_guess - 0.3*peak_guess
+    idx_max = wl < peak_guess + 0.15*peak_guess
+    idx_1 = (wl <= peak_guess - 0.1*peak_guess)
+    idx_3 = (wl >= peak_guess + 0.07*peak_guess)
     idx_2 = idx_1 == idx_3
     idx_1 = idx_1 == idx_min
     idx_3 = idx_3 == idx_max

@@ -74,7 +74,7 @@ for sample in spectra_dict:
     # Renormalize, by removing background and then dividing by lamp_spectra
     avg_spectra = (avg_spectra-sample_bground)/lamp_spectra
     # calc peak_pos and fwhm
-    peak_pos, fwhm = lorentzian_fit(wvl, avg_spectra, 720, False)
+    peak_pos, fwhm = lorentzian_fit(wvl, avg_spectra, 780, False)
     print(peak_pos)
     # Save results
     spectra_dict[sample]["wvl"] = wvl
@@ -84,18 +84,22 @@ for sample in spectra_dict:
 
 # Iterate through and plot all spectras. Also append all peak pos together to a vector and plot that
 peak_vector = []
+height_vector = [0.91, 0.95, 0.51]
+scale_vector = [1.8, 1.8, 1.71]
 for i, sample in enumerate(spectra_dict):
     wvl = spectra_dict[sample]["wvl"]
     avg_spectra = spectra_dict[sample]["avg_spectra"]
     peak_vector.append(spectra_dict[sample]["peak_pos"])
     ax.plot(wvl, avg_spectra, color=spectra_dict[sample]["color"], label=sample, linewidth=2)
+    ax.axvline(peak_vector[i], 0, height_vector[i],  color='k', linestyle='--')
+    ax.plot(peak_vector[i], scale_vector[i]*height_vector[i], 'kx', markersize=12)
 print(peak_vector)
 
 #ax.plot(peak_vector, list(range(len(spectra_dict))), np.zeros(len(spectra_dict)), 'k--', label="Peak position")
 
 #ax.tick_params(axis='both', which='major', pad=0)
-ax.set_xlabel("Wavelength")
-ax.set_ylabel("Counts")
+ax.set_xlabel("Wavelength (nm)")
+ax.set_ylabel("Normalized counts")
 plt.grid()
 plt.legend(loc="upper left")
 plt.tight_layout()
@@ -103,11 +107,11 @@ plt.savefig("ag_au_pd_comparison.png")
 tikzplotlib.save('ag_au_pd_comparison.tex')
 
 fig, ax = plt.subplots()
-ax.plot(peak_vector, 'k*')
-ax.set_ylabel("Peak position")
-ax.set_xlabel("Sample (Ag Au Pd)")
+ax.plot([1,2,3], peak_vector, 'kx--')
+ax.set_ylabel("Peak position (nm)")
+ax.set_xlabel("Sample")
+plt.grid()
 plt.savefig("ag_au_pd_peak_pos.png")
 tikzplotlib.save('ag_au_pd_peak_pos.tex')
 
 plt.show()
-

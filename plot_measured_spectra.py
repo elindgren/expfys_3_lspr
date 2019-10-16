@@ -35,7 +35,7 @@ background = data["spectra_" + str(background_spectra)]
 lamp_spectra = lamp_data["spectra_0"]
 
 peak_guesses = [540+i*20 for i in range(nbr_particles)]
-peak_guesses.reverse()
+#peak_guesses.reverse()
 peak_positions = []
 for i in range(0,nbr_particles):
     spectra = data[f'spectra_{i}']
@@ -44,7 +44,7 @@ for i in range(0,nbr_particles):
         # Don't plot background
         corrected_spectra = (spectra - background)/lamp_spectra
         #norm_spectra = spectra/spectra.max()
-
+        print(peak_guesses[i])
         peak_pos, fwhm = lorentzian_fit(wvl, corrected_spectra, 780, False)
         peak_positions.append(peak_pos)
         delta_y = np.ones(len(wvl))*(i)
@@ -54,20 +54,23 @@ for i in range(0,nbr_particles):
 
 #ax.set_title(f'Corrected spectra for file {filename}')
 ax.tick_params(axis='both', which='major', pad=0)
-ax.set_xlabel("Wavelength")
-ax.set_ylabel("Measurement")
-ax.set_zlabel("Counts")
+ax.set_xlabel("Wavelength (nm)")
+ax.set_ylabel("Particle")
+ax.set_zlabel("Normalized counts")
 plt.grid()
-plt.legend(loc="upper left")
+#plt.legend(loc="upper left")
 plt.tight_layout()
 plt.savefig(f'{filename}.png')
 tikzplotlib.save(f'{filename}.tex')
 
 # Plot peak position as well
 fig, ax = plt.subplots()
-ax.plot(list(range(nbr_particles-1)), peak_positions, 'k--', label="Peak position")
+ax.plot(list(range(nbr_particles-1)), peak_positions, 'kx--', label="Peak position")
 ax.set_xlabel("Particle")
-ax.set_ylabel("Peak position")
+ax.set_ylabel("Peak position (nm)")
+#ax.set_ylim(500,800)
+plt.grid()
+plt.savefig(f'{filename}_peak_pos.png')
 tikzplotlib.save(f'{filename}_peak_pos.tex')
 
 plt.show()

@@ -10,12 +10,12 @@ legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
 x grid style={white!69.01960784313725!black},
-xlabel={Wavelength},
+xlabel={Wavelength (nm)},
 xmajorgrids,
 xmin=385.4823485, xmax=1012.4927215,
 xtick style={color=black},
 y grid style={white!69.01960784313725!black},
-ylabel={Counts},
+ylabel={Normalized counts},
 ymajorgrids,
 ymin=-0.112487880976241, ymax=1.80288822261827,
 ytick style={color=black}
@@ -1048,6 +1048,15 @@ table {%
 983.99225 0.119411894760115
 };
 \addlegendentry{Ag}
+\addplot [semithick, black, dashed, forget plot]
+table {%
+772.793659307193 -0.112487880976241
+772.793659307193 1.63050437329477
+};
+\addplot [semithick, black, mark=x, mark size=6, mark options={solid}, only marks, forget plot]
+table {%
+772.793659307193 1.638
+};
 \addplot [thick, color1]
 table {%
 413.98282 -0.00593385214007817
@@ -2076,6 +2085,15 @@ table {%
 983.99225 0.0439973468936547
 };
 \addlegendentry{Au}
+\addplot [semithick, black, dashed, forget plot]
+table {%
+794.120642437483 -0.112487880976241
+794.120642437483 1.70711941743855
+};
+\addplot [semithick, black, mark=x, mark size=6, mark options={solid}, only marks, forget plot]
+table {%
+794.120642437483 1.71
+};
 \addplot [thick, white!41.17647058823529!black]
 table {%
 413.98282 0.0217898832684821
@@ -3104,6 +3122,15 @@ table {%
 983.99225 0.153194782224187
 };
 \addlegendentry{Pd}
+\addplot [semithick, black, dashed, forget plot]
+table {%
+733.593593466808 -0.112487880976241
+733.593593466808 0.864353931856961
+};
+\addplot [semithick, black, mark=x, mark size=6, mark options={solid}, only marks, forget plot]
+table {%
+733.593593466808 0.8721
+};
 \end{axis}
 
 \end{tikzpicture}

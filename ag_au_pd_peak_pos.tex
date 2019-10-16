@@ -5,19 +5,21 @@
 tick align=outside,
 tick pos=left,
 x grid style={white!69.01960784313725!black},
-xlabel={Sample (Ag Au Pd)},
-xmin=-0.1, xmax=2.1,
+xlabel={Sample},
+xmajorgrids,
+xmin=0.9, xmax=3.1,
 xtick style={color=black},
 y grid style={white!69.01960784313725!black},
-ylabel={Peak position},
-ymin=736.425683652149, ymax=771.260694034317,
+ylabel={Peak position (nm)},
+ymajorgrids,
+ymin=730.567241018274, ymax=797.146994886017,
 ytick style={color=black}
 ]
-\addplot [semithick, black, mark=asterisk, mark size=3, mark options={solid}, only marks]
+\addplot [semithick, black, dashed, mark=x, mark size=3, mark options={solid}]
 table {%
-0 767.365004143385
-1 769.677284471491
-2 738.009093214974
+1 772.793659307193
+2 794.120642437483
+3 733.593593466808
 };
 \end{axis}
 
