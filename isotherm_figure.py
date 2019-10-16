@@ -8,9 +8,10 @@ import pandas as pd
 from tqdm import tqdm
 import seaborn as sns
 import tikzplotlib
-sns.set_palette(sns.color_palette("husl", 20))
+sns.set_palette(sns.husl_palette(20, h=.7))
 
 # Set plot params
+plt.rcParams["font.family"] = "Times New Roman"
 plt.rc('font', size=14)          # controls default text sizes
 plt.rc('axes', titlesize=14)     # fontsize of the axes title
 plt.rc('axes', labelsize=14)    # fontsize of the x and y labels
@@ -38,7 +39,7 @@ gas_data = read_gas_file(gas_file)
 measurements = read_timeseries(filename, nbr_particles) 
 #print(measurements)
 
-peak_guess = 750  # About 750 nm is a good guess for Pd
+peak_guess = 780  # About 750 nm is a good guess for Pd
 
 # Loop over all measurements at different times t
 peak_positions = [[] for i in range(nbr_particles)]
@@ -59,18 +60,19 @@ t = np.array([a for idx, a in enumerate(gas_data[0]) if idx%30 == 0])
 g = np.array([a for idx, a in enumerate(gas_data[1]) if idx%30 == 0])
 # Remove the extra measurements from gas measurement
 t = t[:len(measurements)]
-g = g[:len(measurements)]
+g = g[:len(measurements)]/max(g)*5
 # Plot
 fig, ax1 = plt.subplots()
 for smpl in samples_to_plot:
     # Plot delta FWHM relative to smallest FWHM for each sample (remove offset)
     sample_series = np.array(peak_positions[smpl])
     smallest_fwhm = np.amin(sample_series)
-    ax1.plot(sample_series-smallest_fwhm, g, '.', linewidth=2, alpha=0.7, label=f'Particle {smpl}')
-ax1.set_xlabel("delta FWHM")
-ax1.set_ylabel("Volume percentage of H2")
+    ax1.plot(sample_series-smallest_fwhm, g, '.', linewidth=2)
+
+ax1.set_xlabel(r'$\Delta$FWHM [nm]')
+ax1.set_ylabel(r'H$_2$ [% vol]')
 plt.grid()
-plt.legend(loc="upper left")
+#plt.legend(loc="upper left")
 plt.tight_layout()
 plt.savefig(f'{filename}.png')
 tikzplotlib.save(f'{filename}.tex')

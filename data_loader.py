@@ -32,7 +32,7 @@ def read_gas_file(filename):
     df.columns = df.iloc[0]
     df = df.drop([0,1])
     # pick out relevant columns
-    h2_strs = df.iloc[:, 5]
+    h2_strs = df.iloc[:, 6]
     t_strs = df.iloc[:,0]
     h2 = np.zeros(len(h2_strs))
     t = np.zeros(len(t_strs))

@@ -6,9 +6,10 @@ from data_loader import load_file
 from fit_function import lorentzian_fit
 import tikzplotlib
 import seaborn as sns
-sns.set_palette(sns.color_palette("husl", 20))
+sns.set_palette(sns.husl_palette(20, h=.7))
 
 # Set plot params
+plt.rcParams["font.family"] = "Times New Roman"
 plt.rc('font', size=14)          # controls default text sizes
 plt.rc('axes', titlesize=14)     # fontsize of the axes title
 plt.rc('axes', labelsize=16)    # fontsize of the x and y labels
@@ -33,26 +34,29 @@ spectra_dict = {
         "wvl": [],
         "avg_spectra": np.zeros((1024)),
         "peak_pos": 0,
-        "color": "slategray"
+        "color": "C0",
+        "style": "--"
     },
     "Au": {
         "file": au_file,
         "wvl": [],
         "avg_spectra": np.zeros((1024)),
         "peak_pos": 0,
-        "color": "gold"
+        "color": "C5",
+        "style": "-"
     },
     "Pd": {
         "file": pd_file,
         "wvl": [],
         "avg_spectra": np.zeros((1024)),
         "peak_pos": 0,
-        "color": "dimgray"
+        "color": "C15",
+        "style": "-."
     }
 }
 
 # Define figure
-fig, ax = plt.subplots(figsize=(10,6))
+fig, ax = plt.subplots()
 
 for sample in spectra_dict:
     # Load data from file
@@ -90,7 +94,7 @@ for i, sample in enumerate(spectra_dict):
     wvl = spectra_dict[sample]["wvl"]
     avg_spectra = spectra_dict[sample]["avg_spectra"]
     peak_vector.append(spectra_dict[sample]["peak_pos"])
-    ax.plot(wvl, avg_spectra, color=spectra_dict[sample]["color"], label=sample, linewidth=2)
+    ax.plot(wvl, avg_spectra, color=spectra_dict[sample]["color"], linestyle=spectra_dict[sample]["style"], label=sample, linewidth=2)
     ax.axvline(peak_vector[i], 0, height_vector[i],  color='k', linestyle='--')
     ax.plot(peak_vector[i], scale_vector[i]*height_vector[i], 'kx', markersize=12)
 print(peak_vector)
@@ -98,8 +102,8 @@ print(peak_vector)
 #ax.plot(peak_vector, list(range(len(spectra_dict))), np.zeros(len(spectra_dict)), 'k--', label="Peak position")
 
 #ax.tick_params(axis='both', which='major', pad=0)
-ax.set_xlabel("Wavelength (nm)")
-ax.set_ylabel("Normalized counts")
+ax.set_xlabel(r'Wavelength [nm]')
+ax.set_ylabel(r'Intensity [arb. units]')
 plt.grid()
 plt.legend(loc="upper left")
 plt.tight_layout()

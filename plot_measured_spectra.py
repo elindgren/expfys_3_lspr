@@ -7,10 +7,11 @@ from data_loader import load_file, read_gas_file
 from fit_function import lorentzian_fit
 import tikzplotlib
 import seaborn as sns
-sns.set_palette(sns.color_palette("husl", 20))
+sns.set_palette(sns.husl_palette(20, h=.7))
 
 
 # Set plot params
+plt.rcParams["font.family"] = "Times New Roman"
 plt.rc('font', size=14)          # controls default text sizes
 plt.rc('axes', titlesize=14)     # fontsize of the axes title
 plt.rc('axes', labelsize=16)    # fontsize of the x and y labels
@@ -54,9 +55,10 @@ for i in range(0,nbr_particles):
 
 #ax.set_title(f'Corrected spectra for file {filename}')
 ax.tick_params(axis='both', which='major', pad=0)
-ax.set_xlabel("Wavelength (nm)")
+ax.set_xlabel(r'Wavelength [nm]')
 ax.set_ylabel("Particle")
-ax.set_zlabel("Normalized counts")
+ax.set_zlabel(r'Intensity [arb. units]')
+plt.locator_params(axis='z', nbins=5)
 plt.grid()
 #plt.legend(loc="upper left")
 plt.tight_layout()
@@ -64,10 +66,11 @@ plt.savefig(f'{filename}.png')
 tikzplotlib.save(f'{filename}.tex')
 
 # Plot peak position as well
-fig, ax = plt.subplots()
-ax.plot(list(range(nbr_particles-1)), peak_positions, 'kx--', label="Peak position")
+fig, ax = plt.subplots(figsize=(5,6))
+ax.plot(list(range(1,nbr_particles)), peak_positions, 'kx--', label=r'$\lambda_0$', markersize=12)
 ax.set_xlabel("Particle")
-ax.set_ylabel("Peak position (nm)")
+ax.set_ylabel(r'$\lambda_0$ [nm]')
+plt.tight_layout()
 #ax.set_ylim(500,800)
 plt.grid()
 plt.savefig(f'{filename}_peak_pos.png')

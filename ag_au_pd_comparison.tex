@@ -1,8 +1,9 @@
 % This file was created by tikzplotlib v0.8.2.
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.43921568627451,0.501960784313725,0.564705882352941}
-\definecolor{color1}{rgb}{1,0.843137254901961,0}
+\definecolor{color0}{rgb}{0.37111528427311,0.617412475249904,0.958604764679077}
+\definecolor{color1}{rgb}{0.964652650945934,0.417093496466097,0.702786044940055}
+\definecolor{color2}{rgb}{0.205416452411119,0.684812411579054,0.560393933007445}
 
 \begin{axis}[
 legend cell align={left},
@@ -10,17 +11,17 @@ legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
 x grid style={white!69.01960784313725!black},
-xlabel={Wavelength (nm)},
+xlabel={Wavelength [nm]},
 xmajorgrids,
 xmin=385.4823485, xmax=1012.4927215,
 xtick style={color=black},
 y grid style={white!69.01960784313725!black},
-ylabel={Normalized counts},
+ylabel={Intensity [arb. units]},
 ymajorgrids,
 ymin=-0.112487880976241, ymax=1.80288822261827,
 ytick style={color=black}
 ]
-\addplot [thick, color0]
+\addplot [thick, color0, dashed]
 table {%
 413.98282 -0.0161478599221793
 414.54407 -0.00562977099236607
@@ -2094,7 +2095,7 @@ table {%
 table {%
 794.120642437483 1.71
 };
-\addplot [thick, white!41.17647058823529!black]
+\addplot [thick, color2, dash pattern=on 1pt off 3pt on 3pt off 3pt]
 table {%
 413.98282 0.0217898832684821
 414.54407 0.00219465648854979

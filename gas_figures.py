@@ -8,9 +8,10 @@ import pandas as pd
 from tqdm import tqdm
 import tikzplotlib
 import seaborn as sns
-sns.set_palette(sns.color_palette("husl", 20))
+sns.set_palette(sns.husl_palette(20, h=.7))
 
 # Set plot params
+plt.rcParams["font.family"] = "Times New Roman"
 plt.rc('font', size=14)          # controls default text sizes
 plt.rc('axes', titlesize=14)     # fontsize of the axes title
 plt.rc('axes', labelsize=14)    # fontsize of the x and y labels
@@ -23,7 +24,7 @@ filename = 'Pd_diskrod_200nm_15pt_pulse2'
 lamp_file = 'CRS_700nm_glas'
 gas_file = 'Lab_TIF295_ArH2_pulses_Pd_2'
 nbr_particles = 15
-samples_to_plot = [12, 14]
+samples_to_plot = [11]
 
 # Load lamp spectra
 lamp_data, _  = load_file(lamp_file)
@@ -61,22 +62,30 @@ g = np.array([a for idx, a in enumerate(gas_data[1]) if idx%30 == 0])
 t = t[:len(measurements)]
 g = g[:len(measurements)]
 # Plot
-fig, ax1 = plt.subplots()
+fig, ax1 = plt.subplots(figsize=(10,3))
 #for particle_peak_pos in peak_positions:
 #t =  np.arange(0,119)*30
+lns = []
 for smpl in samples_to_plot:
     # Plot delta FWHM relative to smallest FWHM for each sample (remove offset)
     sample_series = np.array(peak_positions[smpl])
     smallest_fwhm = np.amin(sample_series)
-    ax1.plot(t, sample_series-smallest_fwhm, linewidth=2, alpha=0.7, label=f'Particle {smpl}')
+    ln = ax1.plot(t, sample_series-smallest_fwhm, linewidth=2, label=f'Pd')
+    lns += ln
+
 ax2 = ax1.twinx()
-ax2.plot(t, g/2, 'g', label="H2")
-ax2.set_ylim(0,40)
-ax1.set_xlabel("Time in seconds")
-ax1.set_ylabel("delta FWHM")
-ax2.set_ylabel("Volume percentage of H2")
-plt.grid()
-plt.legend(loc="upper left")
+ln = ax2.plot(t, g/2, 'g--', label=r'H$_2$')
+lns += ln
+ax1.grid(True)
+labs = [l.get_label() for l in lns]
+ax1.legend(lns, labs, loc=2)
+
+ax2.set_ylim(0,30)
+plt.locator_params(axis='y', nbins=6)
+ax1.set_xlabel(r'Time [s]')
+ax1.set_ylabel(r'$\Delta$FWHM [nm]')
+ax2.set_ylabel(r'H$_2$ [% vol]')
+
 plt.tight_layout()
 plt.savefig(f'{filename}.png')
 tikzplotlib.save(f'{filename}.tex')
