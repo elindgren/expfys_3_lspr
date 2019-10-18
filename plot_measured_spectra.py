@@ -46,7 +46,7 @@ for i in range(0,nbr_particles):
         corrected_spectra = (spectra - background)/lamp_spectra
         #norm_spectra = spectra/spectra.max()
         print(peak_guesses[i])
-        peak_pos, fwhm = lorentzian_fit(wvl, corrected_spectra, 780, False)
+        peak_pos, fwhm = lorentzian_fit(wvl, corrected_spectra, 780, True)
         peak_positions.append(peak_pos)
         delta_y = np.ones(len(wvl))*(i)
         ax.plot(wvl, delta_y, corrected_spectra, label=f'Particle {i+1}', alpha=0.7)

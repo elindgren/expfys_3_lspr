@@ -24,7 +24,7 @@ filename = 'Pd_disk_200nm_10pt_isotherm'
 lamp_file = 'CRS_700nm_glas'
 gas_file = 'Lab_TIF295_isothermAbs30C_2p75h_Pd'
 nbr_particles = 10
-samples_to_plot = [5]
+samples_to_plot = [8,9]
 
 # Load lamp spectra
 lamp_data, _  = load_file(lamp_file)
@@ -63,16 +63,21 @@ t = t[:len(measurements)]
 g = g[:len(measurements)]/max(g)*5
 # Plot
 fig, ax1 = plt.subplots()
-for smpl in samples_to_plot:
+
+marker = ['.', 'x']
+color = ['C0', 'C5']
+label = ['A', 'B']
+
+for idx, smpl in enumerate(samples_to_plot):
     # Plot delta FWHM relative to smallest FWHM for each sample (remove offset)
     sample_series = np.array(peak_positions[smpl])
     smallest_fwhm = np.amin(sample_series)
-    ax1.plot(sample_series-smallest_fwhm, g, '.', linewidth=2)
+    ax1.plot(sample_series-smallest_fwhm, g, marker[idx], color = color[idx], linewidth=2, label=f'Particle {label[idx]}')
 
 ax1.set_xlabel(r'$\Delta$FWHM [nm]')
 ax1.set_ylabel(r'H$_2$ [% vol]')
 plt.grid()
-#plt.legend(loc="upper left")
+plt.legend(loc="upper left")
 plt.tight_layout()
 plt.savefig(f'{filename}.png')
 tikzplotlib.save(f'{filename}.tex')

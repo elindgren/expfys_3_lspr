@@ -14,6 +14,17 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from scipy.optimize import minimize_scalar
 from scipy.optimize import root
+import seaborn as sns
+sns.set_palette(sns.husl_palette(20, h=.7))
+
+# Set plot params
+plt.rcParams["font.family"] = "Times New Roman"
+plt.rc('font', size=14)          # controls default text sizes
+plt.rc('axes', titlesize=14)     # fontsize of the axes title
+plt.rc('axes', labelsize=16)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=14)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=14)    # fontsize of the tick labels
+plt.rc('legend', fontsize=14)    # legend fontsize
 
 
 def poly(x, intercept, coef):
@@ -72,20 +83,26 @@ def lorentzian_fit(wavelength, data, peak_guess, plot=True):
         y1 = np.zeros(wl1.shape[0])
         for i, w in enumerate(wl1):
             y1[i]  = poly(w, intercept_1, coef_1)
-        ax.plot(wl1, y1, 'b')
+        ax.plot(wl1, y1, 'C0', label='Interval 1', linewidth=3)
     
         y2 = np.zeros(wl2.shape[0])
         for i, w in enumerate(wl2):
             y2[i]  = poly(w, intercept_2, coef_2)
-        ax.plot(wl2, y2, 'b')
+        ax.plot(wl2, y2, 'C5', label='Interval 2', linewidth=3)
     
         y3 = np.zeros(wl3.shape[0])
         for i, w in enumerate(wl3):
             y3[i]  = poly(w, intercept_3, coef_3)
-        ax.plot(wl3, y3, 'b')
+        ax.plot(wl3, y3, 'C10', label='Interval 3', linewidth=3)
     
-        ax.plot(wl, data, 'r', alpha=0.5) # Real data
+        ax.plot(wl, data, 'k--', alpha=0.5, label="Data") # Real data
+        plt.legend(loc='best')
+        plt.grid()
+        ax.set_xlabel(r'Wavelength [nm]')
+        ax.set_ylabel(r'Intensity [arb. units]')
+        plt.savefig('lorentzian_fit.png')
         plt.show()
+
     
     # Find maxmimum by optimizing the lin_reg.predict
     x0 = minimize_scalar(lambda x, i, c: -poly(x, i, c), method='bounded', args=(intercept_2, coef_2), bounds=(wl2[0],wl2[-1]))

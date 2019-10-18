@@ -20,9 +20,9 @@ plt.rc('ytick', labelsize=14)    # fontsize of the tick labels
 plt.rc('legend', fontsize=14)    # legend fontsize
 
 # Files
-filename = 'Pd_diskrod_200nm_15pt_pulse2'
+filename = 'Au_diskrod_200nm_15pt_pulse'
 lamp_file = 'CRS_700nm_glas'
-gas_file = 'Lab_TIF295_ArH2_pulses_Pd_2'
+gas_file = 'Lab_TIF295_ArH2_pulses_Au'
 nbr_particles = 15
 samples_to_plot = [11]
 
@@ -70,7 +70,7 @@ for smpl in samples_to_plot:
     # Plot delta FWHM relative to smallest FWHM for each sample (remove offset)
     sample_series = np.array(peak_positions[smpl])
     smallest_fwhm = np.amin(sample_series)
-    ln = ax1.plot(t, sample_series-smallest_fwhm, linewidth=2, label=f'Pd')
+    ln = ax1.plot(t, sample_series-smallest_fwhm, linewidth=2, color='C10', label=f'Au')
     lns += ln
 
 ax2 = ax1.twinx()
